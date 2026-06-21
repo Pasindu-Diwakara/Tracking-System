@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Select from "react-select";
 import { Country, City } from "country-state-city";
+import { Package, Lock, Copy, Check, Building2, MapPin, Mail, Scale, ArrowRight, ExternalLink } from "lucide-react";
 import { CARRIERS, generateTrackingNumber, getTrackingProgress } from "../utils/tracking";
 import { S, selectStyles } from "../utils/styles";
 
@@ -97,19 +98,19 @@ export default function GeneratePage({ storage, setStorage }) {
   return (
     <div style={S.app}>
       <header style={S.header}>
-        <Link to="/" style={S.logo}>
-          <span style={{ fontSize: 22 }}>📦</span>
+        <Link to="/" style={{ ...S.logo, display: "flex", alignItems: "center", gap: 8 }}>
+          <Package size={24} color="#63b3ed" />
           <span>JapanShip<span style={{ color: "#63b3ed" }}>Admin</span></span>
         </Link>
         <nav style={S.nav}>
           <div style={S.navBtn(true)}>Generate</div>
-          <Link to="/track" style={{ ...S.navBtn(false), marginLeft: 8 }} target="_blank">View Tracking Portal ↗</Link>
+          <Link to="/track" style={{ ...S.navBtn(false), marginLeft: 8, display: "flex", alignItems: "center", gap: 6 }} target="_blank">View Tracking Portal <ExternalLink size={14} /></Link>
         </nav>
       </header>
 
       <main style={S.page}>
         <div style={S.hero}>
-          <div style={S.heroTag}>Secure Admin Portal 🔐</div>
+          <div style={{ ...S.heroTag, display: "inline-flex", alignItems: "center", gap: 6 }}><Lock size={14} /> Secure Admin Portal</div>
           <h1 style={S.heroTitle}>Generate Tracking Number</h1>
           <p style={S.heroSub}>Create a real-time tracking ID for a shipment from Japan to any destination worldwide</p>
         </div>
@@ -160,8 +161,8 @@ export default function GeneratePage({ storage, setStorage }) {
             />
           </div>
 
-          <button style={S.genBtn} onClick={handleGenerate}>
-            Generate Tracking Number →
+          <button style={{ ...S.genBtn, display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }} onClick={handleGenerate}>
+            Generate Tracking Number <ArrowRight size={18} />
           </button>
         </div>
 
@@ -170,19 +171,19 @@ export default function GeneratePage({ storage, setStorage }) {
             <div style={{ fontSize: 12, color: "#6b7a8d", fontWeight: 600, textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 4 }}>Your Tracking Number</div>
             <div style={S.trackingNum}>{generated.trackingNumber}</div>
             <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
-              <button style={S.copyBtn} onClick={handleCopy}>
-                {copied ? "✅ Copied!" : "📋 Copy Number"}
+              <button style={{ ...S.copyBtn, display: "flex", alignItems: "center", gap: 6 }} onClick={handleCopy}>
+                {copied ? <><Check size={16} /> Copied!</> : <><Copy size={16} /> Copy Number</>}
               </button>
-              <Link to={`/track/${generated.trackingNumber}`} style={{ ...S.copyBtn, color: "#68d391", borderColor: "rgba(104,211,145,0.3)", background: "rgba(104,211,145,0.08)" }} target="_blank">
-                Open Tracking Page ↗
+              <Link to={`/track/${generated.trackingNumber}`} style={{ ...S.copyBtn, color: "#68d391", borderColor: "rgba(104,211,145,0.3)", background: "rgba(104,211,145,0.08)", display: "flex", alignItems: "center", gap: 6 }} target="_blank">
+                Open Tracking Page <ExternalLink size={16} />
               </Link>
             </div>
             <div style={S.metaRow}>
-              <div style={S.metaPill}>🏢 {generated.carrier.name}</div>
-              <div style={S.metaPill}>🇯🇵 Japan → {generated.destination.flag} {generated.destination.city}, {generated.destination.country}</div>
-              <div style={S.metaPill}>📮 {generated.destination.zip}</div>
-              <div style={S.metaPill}>⚖️ {generated.weight}</div>
-              <div style={S.metaPill}>📦 {generated.type}</div>
+              <div style={{ ...S.metaPill, display: "flex", alignItems: "center", gap: 6 }}><Building2 size={14} color="#a0aec0" /> {generated.carrier.name}</div>
+              <div style={{ ...S.metaPill, display: "flex", alignItems: "center", gap: 6 }}><MapPin size={14} color="#a0aec0" /> Japan <ArrowRight size={12} color="#a0aec0" /> {generated.destination.flag} {generated.destination.city}, {generated.destination.country}</div>
+              <div style={{ ...S.metaPill, display: "flex", alignItems: "center", gap: 6 }}><Mail size={14} color="#a0aec0" /> {generated.destination.zip}</div>
+              <div style={{ ...S.metaPill, display: "flex", alignItems: "center", gap: 6 }}><Scale size={14} color="#a0aec0" /> {generated.weight}</div>
+              <div style={{ ...S.metaPill, display: "flex", alignItems: "center", gap: 6 }}><Package size={14} color="#a0aec0" /> {generated.type}</div>
             </div>
           </div>
         )}

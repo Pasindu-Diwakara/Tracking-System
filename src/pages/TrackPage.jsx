@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import * as Icons from "lucide-react";
+import { Package, Search, AlertTriangle, CheckCircle, Truck } from "lucide-react";
 import { getTrackingProgress } from "../utils/tracking";
 import { S } from "../utils/styles";
 
@@ -56,7 +58,10 @@ export default function TrackPage({ storage }) {
       <div style={S.resultBox}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12, marginBottom: 20 }}>
           <div>
-            <div style={S.badge(isDelivered)}>{isDelivered ? "✅ Delivered" : "🔵 In Transit"}</div>
+            <div style={{ ...S.badge(isDelivered), display: "inline-flex", alignItems: "center", gap: 6 }}>
+              {isDelivered ? <CheckCircle size={14} /> : <Truck size={14} />} 
+              {isDelivered ? "Delivered" : "In Transit"}
+            </div>
             <div style={{ fontFamily: "'Courier New', monospace", fontWeight: 800, fontSize: 22, letterSpacing: 3, color: "#fff" }}>{entry.trackingNumber}</div>
             <div style={{ fontSize: 13, color: "#8892a4", marginTop: 4 }}>{entry.carrier.name} · Japan → {entry.destination.flag} {entry.destination.city}, {entry.destination.country}</div>
           </div>
@@ -75,7 +80,10 @@ export default function TrackPage({ storage }) {
 
         {currentCp && (
           <div style={{ background: "rgba(99,179,237,0.07)", border: "1px solid rgba(99,179,237,0.15)", borderRadius: 10, padding: "12px 16px", marginBottom: 24, display: "flex", gap: 12, alignItems: "center" }}>
-            <span style={{ fontSize: 22 }}>{currentCp.icon}</span>
+            {(() => {
+              const IconComp = Icons[currentCp.iconName] || Icons.HelpCircle;
+              return <IconComp size={24} color="#63b3ed" />;
+            })()}
             <div>
               <div style={{ fontWeight: 700, color: "#63b3ed", fontSize: 14 }}>{currentCp.status}</div>
               <div style={{ fontSize: 12, color: "#8892a4" }}>{currentCp.location} · {currentCp.detail}</div>
@@ -94,7 +102,12 @@ export default function TrackPage({ storage }) {
               <div key={i}>
                 <div style={S.timelineItem(done, current)}>
                   <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                    <div style={S.timelineDot(done, current)}>{cp.icon}</div>
+                    <div style={{ ...S.timelineDot(done, current), display: "flex", alignItems: "center", justifyContent: "center" }}>
+                      {(() => {
+                        const IconComp = Icons[cp.iconName] || Icons.HelpCircle;
+                        return <IconComp size={16} color={done ? "#fff" : "#8892a4"} />;
+                      })()}
+                    </div>
                     {!isLast && <div style={S.timelineLine(done)} />}
                   </div>
                   <div style={S.timelineContent}>
@@ -118,8 +131,8 @@ export default function TrackPage({ storage }) {
   return (
     <div style={S.app}>
       <header style={S.header}>
-        <div style={S.logo}>
-          <span style={{ fontSize: 22 }}>📦</span>
+        <div style={{ ...S.logo, display: "flex", alignItems: "center", gap: 8 }}>
+          <Package size={24} color="#63b3ed" />
           <span>JapanShip<span style={{ color: "#63b3ed" }}>Track</span></span>
         </div>
         {/* No link back to the generate page to keep it isolated */}
@@ -127,7 +140,7 @@ export default function TrackPage({ storage }) {
 
       <main style={S.page}>
         <div style={S.hero}>
-          <div style={S.heroTag}>Real-Time Tracking 🔍</div>
+          <div style={{ ...S.heroTag, display: "inline-flex", alignItems: "center", gap: 6 }}><Search size={14} /> Real-Time Tracking</div>
           <h1 style={S.heroTitle}>Track Your Package</h1>
           <p style={S.heroSub}>Enter your Japan-origin tracking number to see live shipment progress</p>
         </div>
@@ -142,7 +155,7 @@ export default function TrackPage({ storage }) {
             onKeyDown={e => e.key === "Enter" && handleTrack()}
           />
           <button style={S.trackBtn} onClick={() => handleTrack()}>Track Shipment</button>
-          {trackError && <div style={S.errorBox}>⚠️ {trackError}</div>}
+          {trackError && <div style={{ ...S.errorBox, display: "flex", alignItems: "center", gap: 8 }}><AlertTriangle size={18} color="#f56565" /> {trackError}</div>}
         </div>
 
         {trackResult && renderTrackingResult(trackResult)}
