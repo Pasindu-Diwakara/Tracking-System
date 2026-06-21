@@ -57,3 +57,51 @@ export function loadStorage() {
 export function saveStorage(data) {
   try { localStorage.setItem("jp_tracking_v1", JSON.stringify(data)); } catch {}
 }
+
+export function generateDeterministicEntry(trackingNumber) {
+  let hash = 0;
+  for (let i = 0; i < trackingNumber.length; i++) {
+    hash = trackingNumber.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  
+  const rng = () => {
+    const x = Math.sin(hash++) * 10000;
+    return x - Math.floor(x);
+  };
+
+  let carrier = CARRIERS.find(c => trackingNumber.startsWith(c.prefix));
+  if (!carrier) carrier = CARRIERS[Math.floor(rng() * CARRIERS.length)];
+
+  const countries = [
+    { name: "United States", code: "US", flag: "🇺🇸", city: "New York" },
+    { name: "United Kingdom", code: "GB", flag: "🇬🇧", city: "London" },
+    { name: "Canada", code: "CA", flag: "🇨🇦", city: "Toronto" },
+    { name: "Australia", code: "AU", flag: "🇦🇺", city: "Sydney" },
+    { name: "Germany", code: "DE", flag: "🇩🇪", city: "Berlin" },
+    { name: "France", code: "FR", flag: "🇫🇷", city: "Paris" },
+    { name: "Singapore", code: "SG", flag: "🇸🇬", city: "Singapore" }
+  ];
+  
+  const selectedCountry = countries[Math.floor(rng() * countries.length)];
+  
+  const destination = {
+    country: selectedCountry.name,
+    code: selectedCountry.code,
+    city: selectedCountry.city,
+    flag: selectedCountry.flag,
+    zip: Math.floor(rng() * 90000 + 10000).toString()
+  };
+
+  const daysAgo = Math.floor(rng() * 15);
+  const createdAt = new Date();
+  createdAt.setDate(createdAt.getDate() - daysAgo);
+
+  return {
+    trackingNumber: trackingNumber.toUpperCase(),
+    carrier: carrier,
+    destination: destination,
+    createdAt: createdAt.toISOString(),
+    weight: (rng() * 4 + 0.3).toFixed(1) + " kg",
+    type: ["Standard Package", "Express Parcel", "Registered Mail", "Priority Shipment"][Math.floor(rng() * 4)]
+  };
+}

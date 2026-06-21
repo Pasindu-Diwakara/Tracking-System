@@ -1,13 +1,14 @@
 import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import * as Icons from "lucide-react";
 import { Package, Search, AlertTriangle, CheckCircle, Truck } from "lucide-react";
-import { getTrackingProgress } from "../utils/tracking";
+import { getTrackingProgress, generateDeterministicEntry } from "../utils/tracking";
 import { S } from "../utils/styles";
 
 export default function TrackPage({ storage }) {
   const { trackingNumber } = useParams();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   
   const [trackInput, setTrackInput] = useState(trackingNumber || "");
   const [trackResult, setTrackResult] = useState(null);
@@ -29,10 +30,25 @@ export default function TrackPage({ storage }) {
       return; 
     }
     
-    const entry = storage[num];
+    let entry = storage[num];
+
+    if (!entry) {
+      const dataParam = searchParams.get('d');
+      if (dataParam) {
+        try {
+          const decoded = JSON.parse(decodeURIComponent(atob(dataParam)));
+          if (decoded && decoded.trackingNumber === num) {
+            entry = decoded;
+          }
+        } catch (e) {
+          console.error("Failed to decode tracking data from URL", e);
+        }
+      }
+    }
+
     if (!entry) { 
-      setTrackError("Tracking number not found. Please verify the number and try again."); 
-      return; 
+      // Fallback to deterministic entry so that typing any tracking number works on mobile
+      entry = generateDeterministicEntry(num);
     }
     
     setTrackResult(entry);

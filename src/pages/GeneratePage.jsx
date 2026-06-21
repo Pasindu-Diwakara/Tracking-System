@@ -174,7 +174,7 @@ export default function GeneratePage({ storage, setStorage }) {
               <button style={{ ...S.copyBtn, display: "flex", alignItems: "center", gap: 6 }} onClick={handleCopy}>
                 {copied ? <><Check size={16} /> Copied!</> : <><Copy size={16} /> Copy Number</>}
               </button>
-              <Link to={`/track/${generated.trackingNumber}`} style={{ ...S.copyBtn, color: "#68d391", borderColor: "rgba(104,211,145,0.3)", background: "rgba(104,211,145,0.08)", display: "flex", alignItems: "center", gap: 6 }} target="_blank">
+              <Link to={`/track/${generated.trackingNumber}?d=${btoa(encodeURIComponent(JSON.stringify(generated)))}`} style={{ ...S.copyBtn, color: "#68d391", borderColor: "rgba(104,211,145,0.3)", background: "rgba(104,211,145,0.08)", display: "flex", alignItems: "center", gap: 6 }} target="_blank">
                 Open Tracking Page <ExternalLink size={16} />
               </Link>
             </div>
@@ -197,7 +197,7 @@ export default function GeneratePage({ storage, setStorage }) {
                 const { daysPassed } = getTrackingProgress(e);
                 const pct = Math.round((daysPassed / 14) * 100);
                 return (
-                  <Link key={num} style={S.historyItem} to={`/track/${num}`} target="_blank">
+                  <Link key={num} style={S.historyItem} to={`/track/${num}?d=${btoa(encodeURIComponent(JSON.stringify(e)))}`} target="_blank">
                     <div>
                       <div style={S.historyCode}>{num}</div>
                       <div style={{ fontSize: 11, color: "#6b7a8d", marginTop: 2 }}>{e.carrier.name} · {e.destination.flag} {e.destination.city}, {e.destination.country}</div>
