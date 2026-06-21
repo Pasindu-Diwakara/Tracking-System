@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { HashRouter, Routes, Route, Navigate } from "react-router-dom";
 import GeneratePage from "./pages/GeneratePage";
 import TrackPage from "./pages/TrackPage";
 import { loadStorage, saveStorage } from "./utils/tracking";
@@ -12,7 +12,7 @@ export default function App() {
   }, [storage]);
 
   return (
-    <BrowserRouter>
+    <HashRouter>
       <Routes>
         {/* Admin route to generate tracking numbers */}
         <Route path="/" element={<GeneratePage storage={storage} setStorage={setStorage} />} />
@@ -24,6 +24,6 @@ export default function App() {
         {/* Fallback */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
