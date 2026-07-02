@@ -327,7 +327,7 @@ const S = {
 };
 
 export default function App() {
-  const [page, setPage] = useState("generate");
+  const [page, setPage] = useState("track");
   const [selectedCarrier, setSelectedCarrier] = useState(CARRIERS[0]);
   const [selectedDest, setSelectedDest] = useState(DESTINATIONS[0]);
   const [generated, setGenerated] = useState(null);
@@ -336,6 +336,18 @@ export default function App() {
   const [trackResult, setTrackResult] = useState(null);
   const [trackError, setTrackError] = useState("");
   const [storage, setStorage] = useState(loadStorage());
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [passcode, setPasscode] = useState("");
+  const [loginError, setLoginError] = useState("");
+
+  function handleLogin() {
+    if (passcode === "Pasindu2002#") {
+      setIsAuthenticated(true);
+      setLoginError("");
+    } else {
+      setLoginError("Incorrect passcode.");
+    }
+  }
 
   useEffect(() => {
     saveStorage(storage);
@@ -471,7 +483,30 @@ export default function App() {
         </nav>
       </header>
 
-      {page === "generate" && (
+      {page === "generate" && !isAuthenticated && (
+        <main style={S.page}>
+          <div style={S.hero}>
+            <div style={S.heroTag}>Admin Only 🔒</div>
+            <h1 style={S.heroTitle}>Restricted Access</h1>
+            <p style={S.heroSub}>Please enter the admin passcode to access the tracking generation portal.</p>
+          </div>
+          <div style={{ ...S.card, maxWidth: 400, margin: "0 auto" }}>
+            <label style={S.label}>Passcode</label>
+            <input
+              type="password"
+              style={S.trackInput}
+              placeholder="Enter passcode"
+              value={passcode}
+              onChange={e => setPasscode(e.target.value)}
+              onKeyDown={e => e.key === "Enter" && handleLogin()}
+            />
+            <button style={S.trackBtn} onClick={handleLogin}>Login</button>
+            {loginError && <div style={S.errorBox}>⚠️ {loginError}</div>}
+          </div>
+        </main>
+      )}
+
+      {page === "generate" && isAuthenticated && (
         <main style={S.page}>
           <div style={S.hero}>
             <div style={S.heroTag}>Origin: Japan 🇯🇵</div>

@@ -21,6 +21,18 @@ export default function GeneratePage({ storage, setStorage }) {
   
   const [generated, setGenerated] = useState(null);
   const [copied, setCopied] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [passcode, setPasscode] = useState("");
+  const [loginError, setLoginError] = useState("");
+
+  function handleLogin() {
+    if (passcode === "Pasindu2002#") {
+      setIsAuthenticated(true);
+      setLoginError("");
+    } else {
+      setLoginError("Incorrect passcode.");
+    }
+  }
 
   useEffect(() => {
     // Load all countries on mount
@@ -119,6 +131,33 @@ export default function GeneratePage({ storage, setStorage }) {
         </nav>
       </header>
 
+      {!isAuthenticated ? (
+        <main style={S.page}>
+          <div style={S.hero}>
+            <div style={{ ...S.heroTag, display: "inline-flex", alignItems: "center", gap: 6 }}><Lock size={14} /> Admin Only</div>
+            <h1 style={S.heroTitle}>Restricted Access</h1>
+            <p style={S.heroSub}>Please enter the admin passcode to access the tracking generation portal.</p>
+          </div>
+          <div style={{ ...S.card, maxWidth: 400, margin: "0 auto" }}>
+            <label style={S.label}>Passcode</label>
+            <input
+              type="password"
+              style={{ width: "100%", padding: "14px 18px", borderRadius: 12, border: "1px solid rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.05)", color: "#e8eaf0", fontSize: 15, outline: "none", marginBottom: 14 }}
+              placeholder="Enter passcode"
+              value={passcode}
+              onChange={e => setPasscode(e.target.value)}
+              onKeyDown={e => e.key === "Enter" && handleLogin()}
+            />
+            <button 
+              style={{ width: "100%", padding: "13px", borderRadius: 12, border: "none", cursor: "pointer", fontWeight: 700, fontSize: 15, background: "linear-gradient(90deg, #276749 0%, #38a169 100%)", color: "#fff", boxShadow: "0 4px 20px rgba(56,161,105,0.3)" }} 
+              onClick={handleLogin}
+            >
+              Login
+            </button>
+            {loginError && <div style={{ background: "rgba(245,101,101,0.08)", border: "1px solid rgba(245,101,101,0.2)", borderRadius: 12, padding: "16px 20px", color: "#fc8181", fontSize: 14, marginTop: 16 }}>⚠️ {loginError}</div>}
+          </div>
+        </main>
+      ) : (
       <main style={S.page}>
         <div style={S.hero}>
           <div style={{ ...S.heroTag, display: "inline-flex", alignItems: "center", gap: 6 }}><Lock size={14} /> Secure Admin Portal</div>
@@ -226,6 +265,7 @@ export default function GeneratePage({ storage, setStorage }) {
           </div>
         )}
       </main>
+      )}
     </div>
   );
 }
